@@ -27,38 +27,55 @@ async def lifespan(app: FastAPI):
     logger.info(f"🚀 Iniciando {settings.BUSINESS_NAME} CRM...")
 
     # Reconstruir credenciales Google desde variable de entorno (Railway)
-    from scripts.credentials_to_env import load_credentials_from_env
-    load_credentials_from_env()
+    try:
+        from scripts.credentials_to_env import load_credentials_from_env
+        load_credentials_from_env()
+        logger.info("✅ Credenciales Google cargadas")
+    except Exception as e:
+        logger.warning(f"⚠️  No se pudieron cargar credenciales Google: {e}")
 
     # Crear tablas si no existen
-    Base.metadata.create_all(bind=engine)
-    logger.info("✅ Base de datos lista")
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("✅ Base de datos lista")
+    except Exception as e:
+        logger.error(f"❌ Error conectando a la base de datos: {e}")
 
     # Iniciar polling de Gmail (solo si el token existe)
-    import os
-    from workers.gmail_poller import process_new_emails
-    if os.path.exists("config/gmail_token.json"):
-        scheduler.add_job(
-            process_new_emails,
-            "interval",
-            seconds=settings.GMAIL_POLL_INTERVAL,
-            id="gmail_poller",
-        )
-        scheduler.start()
-        logger.info(f"✅ Gmail poller iniciado (cada {settings.GMAIL_POLL_INTERVAL}s)")
-    else:
-        logger.warning("⚠️  Gmail no autenticado aún. Ve a /auth/setup para conectar Google.")
+    try:
+        import os
+        from workers.gmail_poller import process_new_emails
+        if os.path.exists("config/gmail_token.json"):
+            scheduler.add_job(
+                process_new_emails,
+                "interval",
+                seconds=settings.GMAIL_POLL_INTERVAL,
+                id="gmail_poller",
+            )
+            scheduler.start()
+            logger.info(f"✅ Gmail poller iniciado (cada {settings.GMAIL_POLL_INTERVAL}s)")
+        else:
+            logger.warning("⚠️  Gmail no autenticado aún. Ve a /auth/setup para conectar Google.")
+    except Exception as e:
+        logger.warning(f"⚠️  Gmail poller no iniciado: {e}")
 
     # Iniciar bot de Telegram en hilo separado
-    from telegram.bot import run_bot
-    bot_thread = threading.Thread(target=run_bot, daemon=True)
-    bot_thread.start()
-    logger.info("✅ Bot de Telegram iniciado")
+    try:
+        from telegram.bot import run_bot
+        bot_thread = threading.Thread(target=run_bot, daemon=True)
+        bot_thread.start()
+        logger.info("✅ Bot de Telegram iniciado")
+    except Exception as e:
+        logger.warning(f"⚠️  Bot de Telegram no iniciado: {e}")
 
     yield
 
     # Shutdown
-    scheduler.shutdown()
+    try:
+        if scheduler.running:
+            scheduler.shutdown()
+    except Exception:
+        pass
     logger.info("👋 CRM detenido")
 
 
