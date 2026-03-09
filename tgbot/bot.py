@@ -191,14 +191,21 @@ def run_bot():
     """Inicia el bot de Telegram (modo polling)."""
     logger.info("🤖 Iniciando bot de Telegram...")
 
-    app = Application.builder().token(settings.TELEGRAM_BOT_TOKEN).build()
+    async def _run():
+        app = Application.builder().token(settings.TELEGRAM_BOT_TOKEN).build()
 
-    app.add_handler(CommandHandler("start", cmd_start))
-    app.add_handler(CommandHandler("clientes", cmd_clientes))
-    app.add_handler(CommandHandler("pendientes", cmd_pendientes))
-    app.add_handler(CommandHandler("presupuestos", cmd_presupuestos))
-    app.add_handler(CommandHandler("stats", cmd_stats))
-    app.add_handler(CommandHandler("buscar", cmd_buscar))
+        app.add_handler(CommandHandler("start", cmd_start))
+        app.add_handler(CommandHandler("clientes", cmd_clientes))
+        app.add_handler(CommandHandler("pendientes", cmd_pendientes))
+        app.add_handler(CommandHandler("presupuestos", cmd_presupuestos))
+        app.add_handler(CommandHandler("stats", cmd_stats))
+        app.add_handler(CommandHandler("buscar", cmd_buscar))
 
-    logger.info("✅ Bot de Telegram listo")
-    app.run_polling(allowed_updates=Update.ALL_TYPES)
+        logger.info("✅ Bot de Telegram listo")
+        async with app:
+            await app.initialize()
+            await app.start()
+            await app.updater.start_polling(allowed_updates=Update.ALL_TYPES)
+            await asyncio.Event().wait()
+
+    asyncio.run(_run())
