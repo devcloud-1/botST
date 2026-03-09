@@ -10,18 +10,18 @@ class Settings(BaseSettings):
     DATABASE_URL: str
 
     # Anthropic
-    ANTHROPIC_API_KEY: str
+    ANTHROPIC_API_KEY: str = ""
 
     # Gmail
-    GMAIL_ACCOUNT_EMAIL: str
+    GMAIL_ACCOUNT_EMAIL: str = ""
     GOOGLE_CREDENTIALS_JSON: str = ""  # base64 del credentials.json, para Railway
 
     # Google Sheets
-    GOOGLE_SHEETS_ID: str
+    GOOGLE_SHEETS_ID: str = "pendiente"
 
     # Telegram
-    TELEGRAM_BOT_TOKEN: str
-    TELEGRAM_ADMIN_CHAT_ID: str
+    TELEGRAM_BOT_TOKEN: str = ""
+    TELEGRAM_ADMIN_CHAT_ID: str = ""
 
     # App
     APP_ENV: str = "development"
