@@ -61,7 +61,7 @@ async def lifespan(app: FastAPI):
 
     # Iniciar bot de Telegram en hilo separado
     try:
-        from telegram.bot import run_bot
+        from tgbot.bot import run_bot
         bot_thread = threading.Thread(target=run_bot, daemon=True)
         bot_thread.start()
         logger.info("✅ Bot de Telegram iniciado")
