@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: crm_servicio
+      POSTGRES_USER: crm_user
+      POSTGRES_PASSWORD: crm_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://crm_user:crm_password@db:5432/crm_servicio
+    depends_on:
+      - db
+    volumes:
+      - ./config:/app/config  # Para persistir tokens de Google
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

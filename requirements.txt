@@ -1,0 +1,34 @@
+# Web framework
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+
+# Base de datos
+sqlalchemy==2.0.30
+alembic==1.13.1
+psycopg2-binary==2.9.9
+
+# IA
+anthropic==0.28.0
+
+# Google APIs (Gmail + Sheets)
+google-auth==2.29.0
+google-auth-oauthlib==1.2.0
+google-auth-httplib2==0.2.0
+google-api-python-client==2.131.0
+
+# Telegram Bot
+python-telegram-bot==21.3
+
+# Utilidades
+python-dotenv==1.0.1
+pydantic==2.7.1
+pydantic-settings==2.2.1
+httpx==0.27.0
+apscheduler==3.10.4
+python-multipart==0.0.9
+
+# Fecha/hora
+python-dateutil==2.9.0
+
+# Logging
+loguru==0.7.2
