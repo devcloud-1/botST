@@ -1,6 +1,7 @@
 """
 AI Email Writer — Redacta correos profesionales con Claude
 """
+from typing import Optional
 import anthropic
 from loguru import logger
 from config.settings import settings
