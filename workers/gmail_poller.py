@@ -11,7 +11,7 @@ from db.models import Client, EmailRecord, EmailStatus, Shipment
 from api.services.gmail_service import fetch_unread_emails, mark_as_read
 from api.services.sheets_service import get_knowledge_context
 from ai.email_reader import analyze_email
-from telegram.bot import send_notification
+from tgbot.bot import send_notification
 
 
 def process_new_emails():
